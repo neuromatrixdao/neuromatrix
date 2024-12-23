@@ -308,9 +308,19 @@ const NeuroMatrixGateway: React.FC = () => {
                       )}
                       {!nftAddress ? (
                         <div>
+                          <div className="mb-4 text-center">
+                            <h3 className="text-lg mb-2">NeuroMatrix Pass NFT</h3>
+                            <div className="relative w-64 h-64 mx-auto rounded-lg overflow-hidden border-2 border-green-500">
+                              <img
+                                src="/neuromatrixpass.jpeg"
+                                alt="NeuroMatrix Pass NFT Preview"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          </div>
                           {isMinting ? (
                             <div className="text-center">
-                              <p>Minting your unique NeuroMatrix NFT...</p>
+                              <p>Minting your unique NeuroMatrix Pass NFT...</p>
                               <div className="loader mt-2"></div>
                             </div>
                           ) : (
@@ -318,7 +328,7 @@ const NeuroMatrixGateway: React.FC = () => {
                               onClick={mintNFT}
                               className="w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors"
                             >
-                              Mint NeuroMatrix NFT
+                              Mint NeuroMatrix Pass NFT
                             </button>
                           )}
                         </div>
@@ -327,6 +337,19 @@ const NeuroMatrixGateway: React.FC = () => {
                           <GlowingText className="text-lg mb-2">NeuroMatrix NFT Minted!</GlowingText>
                           <p>NFT Address: {nftAddress.slice(0, 6)}...{nftAddress.slice(-4)}</p>
                           <p className="mt-2 text-sm">Your unique NeuroMatrix identity is now secured on the Solana blockchain.</p>
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-4"
+                          >
+                            <a
+                              href={`/nft/${nftAddress}`}
+                              className="block w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors text-center"
+                            >
+                              View NFT Details
+                            </a>
+                          </motion.div>
                         </div>
                       )}
                     </div>

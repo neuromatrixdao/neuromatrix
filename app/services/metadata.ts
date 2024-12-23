@@ -50,7 +50,7 @@ export class MetadataService {
     const metadataFilename = `nft-${timestamp}.json`;
 
     return {
-      name: "NeuroMatrix Pass",
+      name: "NeuroMatrix Pass NFT",
       symbol: "NMP",
       description: "Enter the code. Unlock hidden realms of AI-driven cyberpunk. Rewrite your reality—join the NeuroMatrix",
       seller_fee_basis_points: 500,
