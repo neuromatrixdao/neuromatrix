@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { PostgrestError } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -17,7 +18,7 @@ export interface Task {
   created_at: string
 }
 
-export async function incrementGlobalCounter(): Promise<{ data: GlobalCounter | null; error: any }> {
+export async function incrementGlobalCounter(): Promise<{ data: GlobalCounter | null; error: PostgrestError | null }> {
   const { data: counter, error: fetchError } = await supabase
     .from('global_counter')
     .select()
@@ -37,7 +38,7 @@ export async function incrementGlobalCounter(): Promise<{ data: GlobalCounter | 
   return { data, error }
 }
 
-export async function getLatestTask(): Promise<{ data: Task | null; error: any }> {
+export async function getLatestTask(): Promise<{ data: Task | null; error: PostgrestError | null }> {
   const { data, error } = await supabase
     .from('tasks')
     .select()
@@ -48,7 +49,7 @@ export async function getLatestTask(): Promise<{ data: Task | null; error: any }
   return { data, error }
 }
 
-export async function getGlobalCounter(): Promise<{ data: GlobalCounter | null; error: any }> {
+export async function getGlobalCounter(): Promise<{ data: GlobalCounter | null; error: PostgrestError | null }> {
   const { data, error } = await supabase
     .from('global_counter')
     .select()

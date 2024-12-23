@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import GlowingText from './GlowingText';
 
@@ -24,22 +24,7 @@ const SolanaNFTMinter: React.FC<SolanaNFTMinterProps> = ({ isCorrect }) => {
   const [nftAddress, setNftAddress] = useState<string | null>(null);
   const [isMinting, setIsMinting] = useState(false);
 
-  useEffect(() => {
-    if (isCorrect && walletAddress && !nftAddress) {
-      handleMintNFT();
-    }
-  }, [isCorrect, walletAddress, nftAddress]);
-
-  const handleConnectWallet = async () => {
-    try {
-      const address = await connectWallet();
-      setWalletAddress(address);
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-    }
-  };
-
-  const handleMintNFT = async () => {
+  const handleMintNFT = useCallback(async () => {
     if (!walletAddress) return;
 
     setIsMinting(true);
@@ -50,6 +35,21 @@ const SolanaNFTMinter: React.FC<SolanaNFTMinterProps> = ({ isCorrect }) => {
       console.error('Failed to mint NFT:', error);
     } finally {
       setIsMinting(false);
+    }
+  }, [walletAddress]);
+
+  useEffect(() => {
+    if (isCorrect && walletAddress && !nftAddress) {
+      handleMintNFT();
+    }
+  }, [isCorrect, walletAddress, nftAddress, handleMintNFT]);
+
+  const handleConnectWallet = async () => {
+    try {
+      const address = await connectWallet();
+      setWalletAddress(address);
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
     }
   };
 

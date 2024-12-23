@@ -18,6 +18,7 @@ export async function GET() {
       latestTask: taskData
     })
   } catch (error) {
+    console.error('GET /api/counter error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -39,6 +40,7 @@ export async function POST() {
       latestTask: taskData
     })
   } catch (error) {
+    console.error('POST /api/counter error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 } 
