@@ -30,7 +30,7 @@ const NeuroMatrixGateway: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const matrix = "アイウエオカキクケコサシスセソタチツ���トナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const matrix = "アイウエオカキクケコサシスセソタチツ�������トナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops: number[] = [];
@@ -98,12 +98,6 @@ const NeuroMatrixGateway: React.FC = () => {
       setIsMinting(false);
     }
   };
-
-  useEffect(() => {
-    if (isCorrect && connected && publicKey && !nftAddress) {
-      mintNFT();
-    }
-  }, [isCorrect, connected, publicKey, nftAddress]);
 
   const GlowingText: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
     <motion.div
@@ -229,7 +223,12 @@ const NeuroMatrixGateway: React.FC = () => {
                               <div className="loader mt-2"></div>
                             </div>
                           ) : (
-                            <p>Initiating NFT minting process...</p>
+                            <button
+                              onClick={mintNFT}
+                              className="w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors"
+                            >
+                              Mint NeuroMatrix NFT
+                            </button>
                           )}
                         </div>
                       ) : (
