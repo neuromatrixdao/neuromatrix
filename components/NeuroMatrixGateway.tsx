@@ -15,7 +15,7 @@ const NeuroMatrixGateway: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [latestTask, setLatestTask] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { connected, publicKey } = useWallet();
+  const { connected } = useWallet();
   const router = useRouter();
 
   // Effect to handle navigation after wallet connection
