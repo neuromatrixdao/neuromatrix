@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { SolanaAgentKit } from 'solana-agent-kit';
 import { PublicKey } from '@solana/web3.js';
+import { MetadataService } from '@/app/services/metadata';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,11 +21,21 @@ export async function POST(request: NextRequest) {
         process.env.OPENAI_API_KEY!
     );
 
+    // Generate metadata for the NFT
+    const metadata = MetadataService.generateMetadata(
+      process.env.CREATOR_ADDRESS || process.env.SOLANA_PRIVATE_KEY!
+    );
+
     const result = await agent.mintNFT(
         new PublicKey(process.env.NEURO_MATRIX_COLLECTION_ADDRESS!),
         {
-            name: 'NeuroMatrix Green Rain Pass',
-            uri: 'https://example.com/nft-metadata',
+            name: metadata.name,
+            uri: metadata.uri,
+            sellerFeeBasisPoints: metadata.seller_fee_basis_points,
+            creators: metadata.properties.creators.map(creator => ({
+                address: creator.address,
+                share: creator.share
+            }))
         },
         new PublicKey(walletAddress)
     );
@@ -33,6 +44,7 @@ export async function POST(request: NextRequest) {
       success: true,
       nftAddress: result.mint.toString(),
       walletAddress,
+      metadata,
       message: 'NFT minted successfully'
     });
 
