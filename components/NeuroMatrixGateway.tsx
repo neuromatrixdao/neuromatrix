@@ -2,16 +2,18 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 const NeuroMatrixGateway: React.FC = () => {
   const [answer, setAnswer] = useState('');
   const [isCorrect, setIsCorrect] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [nftAddress, setNftAddress] = useState<string | null>(null);
   const [isMinting, setIsMinting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { connected, publicKey } = useWallet();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,7 +30,7 @@ const NeuroMatrixGateway: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const matrix = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const matrix = "アイウエオカキクケコサシスセソタチツ���トナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops: number[] = [];
@@ -82,18 +84,12 @@ const NeuroMatrixGateway: React.FC = () => {
     }
   };
 
-  const connectWallet = async () => {
-    // Simulating wallet connection
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setWalletAddress('DummyWalletAddress123456789');
-  };
-
   const mintNFT = async () => {
-    if (!walletAddress) return;
+    if (!connected || !publicKey) return;
 
     setIsMinting(true);
     try {
-      // Simulating NFT minting process
+      // Simulating NFT minting process for now
       await new Promise(resolve => setTimeout(resolve, 3000));
       setNftAddress('DummyNFTAddress987654321');
     } catch (error) {
@@ -104,10 +100,10 @@ const NeuroMatrixGateway: React.FC = () => {
   };
 
   useEffect(() => {
-    if (isCorrect && walletAddress && !nftAddress) {
+    if (isCorrect && connected && publicKey && !nftAddress) {
       mintNFT();
     }
-  }, [isCorrect, walletAddress, nftAddress, mintNFT]);
+  }, [isCorrect, connected, publicKey, nftAddress]);
 
   const GlowingText: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
     <motion.div
@@ -135,7 +131,7 @@ const NeuroMatrixGateway: React.FC = () => {
     <div className="min-h-screen bg-black text-green-500 font-mono relative overflow-hidden flex flex-col">
       <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full" />
       
-      <main className="relative z-10 container mx-auto px-4 py-8 flex-grow flex flex-col justify-center">
+      <main className="relative z-10 container mx-auto px-4 py-8 flex-grow flex flex-col">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -216,16 +212,15 @@ const NeuroMatrixGateway: React.FC = () => {
                   className="mt-8 p-4 border border-green-500 rounded-lg"
                 >
                   <GlowingText className="text-xl mb-4">Neural Link Established</GlowingText>
-                  {!walletAddress ? (
-                    <button
-                      onClick={connectWallet}
-                      className="w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors"
-                    >
-                      Connect Solana Wallet
-                    </button>
+                  {!connected ? (
+                    <div className="flex justify-center">
+                      <WalletMultiButton className="!bg-green-500 !text-black hover:!bg-green-400 transition-colors" />
+                    </div>
                   ) : (
                     <div>
-                      <p className="mb-2">Wallet connected: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}</p>
+                      {publicKey && (
+                        <p className="mb-2">Wallet connected: {publicKey.toString().slice(0, 6)}...{publicKey.toString().slice(-4)}</p>
+                      )}
                       {!nftAddress ? (
                         <div>
                           {isMinting ? (
