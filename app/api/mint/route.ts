@@ -4,6 +4,8 @@ import { SolanaAgentKit } from 'solana-agent-kit';
 import { PublicKey } from '@solana/web3.js';
 import { MetadataService } from '@/app/services/metadata';
 
+export const maxDuration = 30;
+
 export async function POST(request: NextRequest) {
   try {
     const { walletAddress } = await request.json();
