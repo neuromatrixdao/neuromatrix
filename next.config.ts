@@ -8,13 +8,6 @@ const nextConfig: NextConfig = {
     '@solana/wallet-adapter-wallets',
     '@solana/web3.js',
   ],
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.css$/i,
-      use: ["style-loader", "css-loader"],
-    });
-    return config;
-  },
 };
 
 export default nextConfig;

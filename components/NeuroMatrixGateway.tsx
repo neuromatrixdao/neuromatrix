@@ -30,7 +30,7 @@ const NeuroMatrixGateway: React.FC = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const matrix = "アイウエオカキクケコサシスセソタチツ�������トナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const matrix = "アイウエオカキクケコサシスセソタチツトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const fontSize = 16;
     const columns = canvas.width / fontSize;
     const drops: number[] = [];
