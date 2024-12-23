@@ -12,8 +12,14 @@ const NeuroMatrixGateway: React.FC = () => {
   const [showHint, setShowHint] = useState(false);
   const [nftAddress, setNftAddress] = useState<string | null>(null);
   const [isMinting, setIsMinting] = useState(false);
+  const [latestTask, setLatestTask] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { connected, publicKey } = useWallet();
+
+  useEffect(() => {
+    fetchGlobalCounter();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -71,9 +77,49 @@ const NeuroMatrixGateway: React.FC = () => {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const fetchGlobalCounter = async () => {
+    try {
+      const response = await fetch('/api/counter');
+      const data = await response.json();
+      if (data.counter) {
+        setAttempts(data.counter.attempts);
+      }
+      if (data.latestTask) {
+        setLatestTask(data.latestTask.content);
+      }
+    } catch (error) {
+      console.error('Failed to fetch counter:', error);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    
     setAttempts(prev => prev + 1);
+    
+    try {
+      const response = await fetch('/api/counter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      const data = await response.json();
+      if (data.counter) {
+        if (data.counter.attempts !== attempts + 1) {
+          setAttempts(data.counter.attempts);
+        }
+      }
+      if (data.latestTask) {
+        setLatestTask(data.latestTask.content);
+      }
+    } catch (error) {
+      console.error('Failed to increment counter:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
     
     if (answer.toLowerCase() === 'red') {
       setIsCorrect(true);
@@ -175,12 +221,25 @@ const NeuroMatrixGateway: React.FC = () => {
                   onChange={(e) => setAnswer(e.target.value)}
                   className="w-full bg-black/50 border border-green-500 text-green-500 text-center p-2 rounded"
                   placeholder="Enter your answer"
+                  disabled={isSubmitting}
                 />
                 <button 
                   type="submit"
-                  className="w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors"
+                  disabled={isSubmitting}
+                  className={`w-full bg-green-500 text-black py-2 rounded hover:bg-green-400 transition-colors relative ${
+                    isSubmitting ? 'opacity-90' : ''
+                  }`}
                 >
-                  Submit
+                  {isSubmitting ? (
+                    <>
+                      <span className="opacity-0">Submit</span>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="loader w-5 h-5 border-2"></div>
+                      </div>
+                    </>
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </form>
 
@@ -188,15 +247,34 @@ const NeuroMatrixGateway: React.FC = () => {
                 <button
                   onClick={() => setShowHint(!showHint)}
                   className="text-green-500 hover:text-green-400"
+                  disabled={isSubmitting}
                 >
                   Need a hint?
                 </button>
                 <div className="flex gap-4">
-                  <span>Attempts: {attempts}</span>
+                  <motion.span
+                    key={attempts}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    Attempts: {attempts}
+                  </motion.span>
                   <span>|</span>
                   <span>Status: {isCorrect ? 'Access Granted' : 'Pending'}</span>
                 </div>
               </div>
+
+              {latestTask && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="mt-4 p-4 border border-green-500/50 rounded"
+                >
+                  <p className="text-sm">Latest Task: {latestTask}</p>
+                </motion.div>
+              )}
 
               <AnimatePresence>
                 {showHint && (
@@ -272,6 +350,20 @@ const NeuroMatrixGateway: React.FC = () => {
       </main>
 
       <style jsx>{`
+        .loader {
+          border: 2px solid #000;
+          border-top: 2px solid transparent;
+          border-radius: 50%;
+          width: 20px;
+          height: 20px;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
         .shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
@@ -281,21 +373,6 @@ const NeuroMatrixGateway: React.FC = () => {
           20%, 80% { transform: translate3d(2px, 0, 0); }
           30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
           40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-
-        .loader {
-          border: 4px solid #00ff00;
-          border-top: 4px solid transparent;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          animation: spin 1s linear infinite;
-          margin: 0 auto;
-        }
-
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
         }
       `}</style>
     </div>
