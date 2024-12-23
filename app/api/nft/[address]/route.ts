@@ -6,11 +6,11 @@ import { MetadataService } from '@/app/services/metadata';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { address: string } }
+  context: { params: { address: string } }
 ) {
   try {
     // Validate NFT address
-    const nftAddress = new PublicKey(params.address);
+    const nftAddress = new PublicKey(context.params.address);
 
     // First try to get local metadata
     const localMetadata = MetadataService.generateMetadata(
@@ -26,7 +26,7 @@ export async function GET(
       symbol: localMetadata.symbol,
       collection: localMetadata.collection.name,
       updateAuthority: process.env.CREATOR_ADDRESS || process.env.SOLANA_PRIVATE_KEY!,
-      mintAddress: params.address
+      mintAddress: context.params.address
     };
 
     // Try to get on-chain metadata in the background
