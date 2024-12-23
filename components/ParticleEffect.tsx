@@ -41,18 +41,6 @@ const ParticleEffect: React.FC = () => {
       });
     }
 
-    const drawTriangle = (x: number, y: number, size: number, rotation: number) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
-      ctx.beginPath();
-      ctx.moveTo(0, -size / 2);
-      ctx.lineTo(-size / 2, size / 2);
-      ctx.lineTo(size / 2, size / 2);
-      ctx.closePath();
-      ctx.restore();
-    };
-
     const animate = () => {
       requestAnimationFrame(animate);
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';

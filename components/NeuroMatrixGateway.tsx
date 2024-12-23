@@ -107,7 +107,7 @@ const NeuroMatrixGateway: React.FC = () => {
     if (isCorrect && walletAddress && !nftAddress) {
       mintNFT();
     }
-  }, [isCorrect, walletAddress, nftAddress]);
+  }, [isCorrect, walletAddress, nftAddress, mintNFT]);
 
   const GlowingText: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
     <motion.div
@@ -203,7 +203,7 @@ const NeuroMatrixGateway: React.FC = () => {
                     exit={{ opacity: 0, height: 0 }}
                     className="text-sm text-green-400/80 mt-4"
                   >
-                    Hint: Remember Neo's choice in the first Matrix movie
+                    Hint: Remember Neo&apos;s choice in the first Matrix movie
                   </motion.div>
                 )}
               </AnimatePresence>
