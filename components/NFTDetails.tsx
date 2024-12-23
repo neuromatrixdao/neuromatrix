@@ -39,7 +39,13 @@ export default function NFTDetails() {
       // Validate the address
       new PublicKey(params.address);
 
-      const response = await fetch(`/api/nft/${params.address}`);
+      const response = await fetch(`/api/nft/${params.address}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch NFT metadata');
       }

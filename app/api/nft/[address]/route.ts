@@ -1,16 +1,37 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { PublicKey, Connection } from '@solana/web3.js';
 import { Metaplex } from '@metaplex-foundation/js';
 import { MetadataService } from '@/app/services/metadata';
 
-export async function GET(
-  request: Request,
-  { params }: { params: { address: string } }
+export const dynamic = 'force-dynamic';
+
+type NFTMetadata = {
+  name: string;
+  description: string;
+  image: string;
+  attributes: {
+    trait_type: string;
+    value: string;
+  }[];
+  symbol: string;
+  collection: string;
+  updateAuthority: string;
+  mintAddress: string;
+}
+
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ address: string }> }
 ) {
   try {
+    // Get the address from params
+    const { address } = await params;
+    
     // Validate NFT address
-    const nftAddress = new PublicKey(params.address);
+    const nftAddress = new PublicKey(address);
+
+    // Get request body if any
+    const body = await req.json().catch(() => ({}));
 
     // First try to get local metadata
     const localMetadata = MetadataService.generateMetadata(
@@ -18,7 +39,7 @@ export async function GET(
     );
 
     // Format the response with local metadata
-    const metadata = {
+    const metadata: NFTMetadata = {
       name: localMetadata.name,
       description: localMetadata.description,
       image: localMetadata.image,
@@ -26,7 +47,8 @@ export async function GET(
       symbol: localMetadata.symbol,
       collection: localMetadata.collection.name,
       updateAuthority: process.env.CREATOR_ADDRESS || process.env.SOLANA_PRIVATE_KEY!,
-      mintAddress: params.address
+      mintAddress: address,
+      ...body // Merge any additional data from request body
     };
 
     // Try to get on-chain metadata in the background
