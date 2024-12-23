@@ -89,9 +89,22 @@ const NeuroMatrixGateway: React.FC = () => {
 
     setIsMinting(true);
     try {
-      // Simulating NFT minting process for now
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      setNftAddress('DummyNFTAddress987654321');
+      const response = await fetch('/api/mint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: publicKey.toString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to mint NFT');
+      }
+
+      const data = await response.json();
+      setNftAddress(data.nftAddress);
     } catch (error) {
       console.error('Failed to mint NFT:', error);
     } finally {
