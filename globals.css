@@ -1,0 +1,14 @@
+@keyframes matrix-code {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+.bg-matrix-code {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFoSURBVGhD7ZjRDYMwDEQzQkboCB2hI3SEbsAGbMAGbMAGbMAGiE+kRMSNTeyEtJH8pCoNON7LNYkdnc1mM4Xr9XprQbsRMCKPx+OtBe1G4IvI+XxWl8tF3e93xXXUhsrwQYRkiIjWkCNqV4UPIvf7XR0OB7W/31Tr/VWHKvBBBGR2u53a7/cGkRm1q8IXkYgIELWrwhcRIGoXhU8iQNQuCt9EgKhdFD6KAFGbVnwVAaJ2rfgsAkRtWvFdBIjatBKCCBC1aSUUESBq00ooIkDUppWQRICoTSuhiQBRm1ZCFAGiNq2EKgJEbVoJWQSI2rQSuggQtWklBhEgatNKDCJA1KaVWESAqE0rsYgAUZtWYhIBojatxCYCRG1aiVEEiNq0EqMIELVpJVYRIGrTSswiQNSmldhFgKhNKymIAFGbVlIRAaI2raQkAkRtWklNBIjatJKiCBC1aSVVESBq00rKIkDUZjOZKZxOPwlXzRhgY8U3AAAAAElFTkSuQmCC");
+  animation: matrix-code 20s linear infinite;
+}
+
