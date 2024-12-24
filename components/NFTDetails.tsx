@@ -7,6 +7,7 @@ import { PublicKey } from '@solana/web3.js';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import GlowingText from './GlowingText';
+import DarkNeonGlitchBanner from './DarkNeonGlitchBanner';
 
 interface NFTMetadata {
   name: string;
@@ -102,6 +103,7 @@ export default function NFTDetails() {
 
   return (
     <div className="min-h-screen bg-black text-green-500 font-mono p-8">
+      <DarkNeonGlitchBanner />
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
